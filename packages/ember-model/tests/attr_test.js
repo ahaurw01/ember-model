@@ -4,11 +4,11 @@ var attr = Ember.attr,
 
 module("Ember.attr", {
   setup: function() {
-    Child: Ember.Model.extend({
+    Child = Ember.Model.extend({
       name: Ember.attr(Ember.Type.string),
       age: Ember.attr(Ember.Type.number),
       isCool: Ember.attr(Ember.Type.boolean)
-    }),
+    });
     Parent = Ember.Model.extend({
       name: Ember.attr(Ember.Type.string),
       age: Ember.attr(Ember.Type.number),
