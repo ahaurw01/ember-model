@@ -30,8 +30,7 @@ Ember.Type = Ember.Object.extend({
   array: (function() {
     var parentType = this,
         Type;
-    Type = Ember.Type.extend();
-    Type.reopenClass({
+    Type = Ember.Type.extend({
       isEqual: function(value1, value2) {
         if (!(value1 instanceof Array) || !(value2 instanceof Array) || value1.length !== value2.length) {
           return false;
