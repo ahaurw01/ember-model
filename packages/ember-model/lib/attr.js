@@ -2,10 +2,10 @@ var get = Ember.get,
     set = Ember.set,
     meta = Ember.meta;
 
-Ember.attr = function(type) {
+Ember.attr = function(Type) {
   return Ember.computed(function(key, value) {
     var data = get(this, 'data'),
-        dataValue = data && get(data, key),
+        dataValue = data && (Type ? Type.deserialize(get(data, key)) : get(data, key)),
         beingCreated = meta(this).proto === this;
 
     if (arguments.length === 2) {
@@ -13,14 +13,14 @@ Ember.attr = function(type) {
         if (!data) {
           data = {};
           set(this, 'data', data);
-          data[key] = value;
+          data[key] = Type ? Type.serialize(value) : value;
         }
         return value;
       }
 
       var isEqual;
-      if (type && type.isEqual) {
-        isEqual = type.isEqual(dataValue, value);
+      if (Type && Type.isEqual) {
+        isEqual = Type.isEqual(dataValue, value);
       } else {
         isEqual = dataValue === value;
       }
@@ -34,9 +34,9 @@ Ember.attr = function(type) {
       return value;
     }
 
-    if (typeof dataValue === 'object') {
+    if (typeof dataValue === 'object' && !(dataValue instanceof Ember.Object)) {
       dataValue = Ember.create(dataValue);
     }
     return dataValue;
-  }).property('data').meta({isAttribute: true, type: type});
+  }).property('data').meta({isAttribute: true, type: Type});
 };
