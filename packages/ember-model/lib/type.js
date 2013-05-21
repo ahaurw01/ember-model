@@ -1,5 +1,4 @@
-Ember.Type = Ember.Object.extend();
-Ember.Type.reopenClass({
+Ember.Type = Ember.Object.extend({
   /**
    * Given two values of this type, determine if these are equal.
    * @param value1
@@ -67,8 +66,9 @@ Ember.Type.reopenClass({
       }
     });
     return Type;
-  })(),
-
+  })()
+});
+Ember.Type.reopenClass({
   /*
   Concrete implementations
    */
