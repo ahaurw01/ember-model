@@ -45,8 +45,10 @@ test("types work!", function () {
   Ember.run(function() {
     parent.load(1, parentObject);
   });
+  Ember.run(function() {
+    parent = Parent.find(1);
+  });
 
-  parent = Parent.find(1);
   equal(parent.get('name'), 'Daddy');
   equal(typeof parent.get('name'), 'string');
   equal(parent.get('age'), 35);
