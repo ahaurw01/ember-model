@@ -12,14 +12,14 @@ module("Ember.attr", {
     Parent = Ember.Model.extend({
       name: Ember.attr(Ember.Type.string),
       age: Ember.attr(Ember.Type.number),
-      children: Ember.attr(Child.array)
+      children: Ember.attr(Ember.Type.arrayOf(Child))
     });
   }
 });
 
 test("when the attr is specified on an object it should Object.create the object", function() {
   var Page = Ember.Model.extend({
-    author: attr()
+    author: attr(Ember.Type.object)
   });
   var originalAuthorObject = {id: 1, name: "Erik"},
       page = Page.create();
@@ -36,24 +36,36 @@ test("types work!", function () {
   expect(10);
 
   var childObjects = [
-      {id: 1, name: 'Erik', age: 6, isCool: true},
-      {id: 2, name: 'Aaron', age: 5, isCool: false}
-    ],
-    parentObject = {id: 1, name: 'Daddy', age: 35, children: childObjects},
-    parent = Parent.create();
+        {id: '1', name: 'Erik', age: '6', isCool: 'true'},
+        {id: '2', name: 'Aaron', age: '5', isCool: 'false'}
+      ],
+      parentObject = {id: '1', name: 'Daddy', age: '35', children: childObjects},
+      parent = Parent.create(),
+      parentAge,
+      parentName,
+      children,
+      childAge,
+      childName,
+      childIsCool;
 
   Ember.run(function() {
     parent.load(1, parentObject);
+    parentAge = parent.get('age');
+    parentName = parent.get('name');
+    children = parent.get('children');
+    childAge = children[0].get('age');
+    childName = children[0].get('name');
+    childIsCool = children[0].get('isCool');
   });
 
-  equal(parent.get('name'), 'Daddy');
-  equal(typeof parent.get('name'), 'string');
-  equal(parent.get('age'), 35);
+  equal(parentName, 'Daddy');
+  equal(typeof parentName, 'string');
+  equal(parentAge, 35);
   equal(typeof parent.get('age'), 'number');
-  equal(parent.get('children').length, 2);
-  equal(parent.get('children')[0].get('name'), 'Erik');
-  equal(typeof parent.get('children')[0].get('name'), 'string');
-  equal(parent.get('children')[0].get('age'), 6);
-  equal(typeof parent.get('children')[0].get('age'), 'number');
-  equal(parent.get('children')[0].get('isCool'), true);
+  equal(children.length, 2);
+  equal(childName, 'Erik');
+  equal(typeof childName, 'string');
+  equal(childAge, 6);
+  equal(typeof childAge, 'number');
+  equal(childIsCool, true);
 });

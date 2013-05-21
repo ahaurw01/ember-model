@@ -309,27 +309,32 @@ Ember.Model.reopenClass({
     }
   },
 
-  type: (function() {
-    var create = this.create;
-    Ember.Type.create({
+  /**
+   * Used when the id needs to be generated because this is a subtype to an array type
+   * and the embedded object does not have an id.
+   */
+  _modelId: 1,
+
+  type: function() {
+    var Model = this,
+        modelId = this._modelId++;
+    return Ember.Type.create({
       isEqual: function(value1, value2) {
         // TODO iterate through attributes and use their isEqual methods
         return value1 === value2;
       },
 
-      _modelId: 1,
-
       deserialize: function(value) {
         Ember.assert('Cannot deserialize non-object value', typeof value === 'object');
-        var model = create(),
-          id = value.id || this._modelId++;
+        var model = Model.create(),
+            id = value.id || modelId;
         model.load(id, value);
         return model;
       },
 
       serialize: function(value) {
-        return value.toJSON();
+        return value.get('data');
       }
-    })
-  })()
+    });
+  }
 });
