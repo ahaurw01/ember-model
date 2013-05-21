@@ -39,14 +39,11 @@ test("types work!", function () {
       {id: 1, name: 'Erik', age: 6, isCool: true},
       {id: 2, name: 'Aaron', age: 5, isCool: false}
     ],
-    parentObject = {id: 1, name: 'Daddy', age: 35, children: childObjects};
+    parentObject = {id: 1, name: 'Daddy', age: 35, children: childObjects},
+    parent = Parent.create();
 
-  parent = Parent.create();
   Ember.run(function() {
     parent.load(1, parentObject);
-  });
-  Ember.run(function() {
-    parent = Parent.find(1);
   });
 
   equal(parent.get('name'), 'Daddy');
