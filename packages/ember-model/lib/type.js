@@ -46,8 +46,7 @@ Ember.Type.reopenClass({
       },
 
       deserialize: function(value) {
-        var parentType = this,
-          array;
+        var array;
         Ember.assert('Cannot deserialize non-array object', value instanceof Array);
         array = Ember.A(value).map(function(val) {
           return parentType.deserialize(val);
@@ -56,8 +55,7 @@ Ember.Type.reopenClass({
       },
 
       serialize: function(value) {
-        var parentType = this,
-          stringRepresentation = '[';
+        var stringRepresentation = '[';
         for (var i = 0; i < value.length; i++) {
           stringRepresentation += parentType.serialize(value[i]);
           if (i < i - 1) {
