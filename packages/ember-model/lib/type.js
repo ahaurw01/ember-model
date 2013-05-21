@@ -49,7 +49,7 @@ Ember.Type.reopenClass({
         var parentType = this,
           array;
         Ember.assert('Cannot deserialize non-array object', value instanceof Array);
-        array = Ember.Array.create(value).map(function(val) {
+        array = Ember.A(value).map(function(val) {
           return parentType.deserialize(val);
         });
         return array;
