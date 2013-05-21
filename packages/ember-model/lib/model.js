@@ -23,7 +23,7 @@ function concatUnique(toArray, fromArray) {
 
 Ember.run.queues.push('data');
 
-Ember.Model = Ember.Object.extend(Ember.Evented, Ember.DeferredMixin, {
+Ember.Model = Ember.Type.extend(Ember.Evented, Ember.DeferredMixin, {
   isLoaded: true,
   isLoading: Ember.computed.not('isLoaded'),
   isNew: true,
@@ -307,5 +307,24 @@ Ember.Model.reopenClass({
       var hash = hashes[i];
       this.sideloadedData[hash.id] = hash; // FIXME: hardcoding `id` property
     }
+  },
+
+  isEqual: function(value1, value2) {
+    // TODO iterate through attributes and use their isEqual methods
+    return value1 === value2;
+  },
+
+  _modelId: 1,
+
+  deserialize: function(value) {
+    Ember.assert('Cannot deserialize non-object value', typeof value === 'object');
+    var model = this.create(),
+        id = value.id || this._modelId++;
+    model.load(id, value);
+    return model;
+  },
+
+  serialize: function(value) {
+    return value.toJSON();
   }
 });

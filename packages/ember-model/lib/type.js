@@ -1,4 +1,5 @@
-Ember.Type = Em.Object.extend({
+Ember.Type = Em.Object.extend();
+Ember.Type.reopenClass({
   /**
    * Given two values of this type, determine if these are equal.
    * @param value1
@@ -22,10 +23,58 @@ Ember.Type = Em.Object.extend({
    */
   serialize: function(value) {
     throw new Error('Ember.Type subclasses must implement serialize');
-  }
-});
+  },
 
-Ember.Type.reopenClass({
+  /**
+   * Simulate a has-many relationship
+   */
+  array: (function() {
+    var parentType = this,
+        Type;
+    Type = Ember.Type.extend();
+    Type.reopenClass({
+      isEqual: function(value1, value2) {
+        if (!(value1 instanceof Array) || !(value2 instanceof Array) || value1.length !== value2.length) {
+          return false;
+        }
+        for (var i = 0; i < value1.length; i++) {
+          if (!parentType.isEqual(value1[i], value2[i])) {
+            return false;
+          }
+        }
+        return true;
+      },
+
+      deserialize: function(value) {
+        var parentType = this,
+          array;
+        Ember.assert('Cannot deserialize non-array object', value instanceof Array);
+        array = Ember.Array.create(value).map(function(val) {
+          return parentType.deserialize(val);
+        });
+        return array;
+      },
+
+      serialize: function(value) {
+        var parentType = this,
+          stringRepresentation = '[';
+        for (var i = 0; i < value.length; i++) {
+          stringRepresentation += parentType.serialize(value[i]);
+          if (i < i - 1) {
+            stringRepresentation += ',';
+          }
+        }
+        stringRepresentation += ']';
+        return stringRepresentation;
+      }
+    });
+    return Type;
+  })(),
+
+  /*
+  Concrete implementations
+   */
+
   number: Ember.Type.create({
     isEqual: function(value1, value2) {
       return typeof value1 === 'number' && value1 === value2;
